@@ -1,0 +1,42 @@
+deployments:
+  cdp-test:
+    type: "confluent-connector"
+    deploy_from:
+      - main
+    application: grandcentral
+    environment_name: staging
+    kafka_cluster_name: shared-square-staging-us-west-2
+    connector_config:
+      connector.class: SnowflakeSink
+      kafka.auth.mode: SERVICE_ACCOUNT
+      kafka.service.account.name: cdp-ingest-sa
+      topics: cdp__global__track__beta_labs,cdp__global__track__account_create_start
+      input.data.format: AVRO
+      snowflake.url.name: https://squarestaging.snowflakecomputing.com
+      snowflake.user.name: grandcentral@squareup.com
+      snowflake.database.name: grandcentral
+      snowflake.schema.name: cdp
+      tasks.max: 1
+      snowflake.topic2table.map: cdp__global__track__beta_labs:cdp__global__track__beta_labs,cdp__global__track__account_create_start:cdp__global__track__account_create_start
+  cdp-flatten:
+    type: "confluent-connector"
+    deploy_from:
+      - main
+    application: grandcentral
+    environment_name: staging
+    kafka_cluster_name: shared-square-staging-us-west-2
+    connector_config:
+      connector.class: SnowflakeSink
+      kafka.auth.mode: SERVICE_ACCOUNT
+      kafka.service.account.name: cdp-ingest-sa
+      topics: cdp__global__track__beta_labs,cdp__global__track__account_create_start
+      input.data.format: AVRO
+      snowflake.url.name: https://squarestaging.snowflakecomputing.com
+      snowflake.user.name: grandcentral@squareup.com
+      snowflake.database.name: grandcentral
+      snowflake.role.name: grandcentral
+      snowflake.enable.schematization: "true"
+      snowflake.ingestion.method: SNOWPIPE_STREAMING
+      snowflake.schema.name: cdp
+      tasks.max: 1
+      snowflake.topic2table.map: cdp__global__track__beta_labs:cdp__global__track__beta_labs__flatten,cdp__global__track__account_create_start:cdp__global__track__account_create_start__flatten
