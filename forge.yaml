@@ -1,42 +1,21 @@
 deployments:
-  cdp-test:
-    type: "confluent-connector"
+  s3-sink-test-20240529:
+    type: confluent-connector
     deploy_from:
-      - main
+      - canary
     application: grandcentral
     environment_name: staging
     kafka_cluster_name: shared-square-staging-us-west-2
+    enable_dd_metrics: False
     connector_config:
-      connector.class: SnowflakeSink
-      kafka.auth.mode: SERVICE_ACCOUNT
-      kafka.service.account.name: cdp-ingest-sa
-      topics: cdp__global__track__beta_labs,cdp__global__track__account_create_start
-      input.data.format: AVRO
-      snowflake.url.name: https://squarestaging.snowflakecomputing.com
-      snowflake.user.name: grandcentral@squareup.com
-      snowflake.database.name: grandcentral
-      snowflake.schema.name: cdp
+      connector.class: S3_SINK
       tasks.max: 1
-      snowflake.topic2table.map: cdp__global__track__beta_labs:cdp__global__track__beta_labs,cdp__global__track__account_create_start:cdp__global__track__account_create_start
-  cdp-flatten:
-    type: "confluent-connector"
-    deploy_from:
-      - main
-    application: grandcentral
-    environment_name: staging
-    kafka_cluster_name: shared-square-staging-us-west-2
-    connector_config:
-      connector.class: SnowflakeSink
+      aws.access.key.id: AKIA3X7TJAL73GLPQJ26
+      aws.secret.access.key: test-secret
       kafka.auth.mode: SERVICE_ACCOUNT
-      kafka.service.account.name: cdp-ingest-sa
-      topics: cdp__global__track__beta_labs,cdp__global__track__account_create_start
-      input.data.format: AVRO
-      snowflake.url.name: https://squarestaging.snowflakecomputing.com
-      snowflake.user.name: grandcentral@squareup.com
-      snowflake.database.name: grandcentral
-      snowflake.role.name: grandcentral
-      snowflake.enable.schematization: "true"
-      snowflake.ingestion.method: SNOWPIPE_STREAMING
-      snowflake.schema.name: cdp
-      tasks.max: 1
-      snowflake.topic2table.map: cdp__global__track__beta_labs:cdp__global__track__beta_labs__flatten,cdp__global__track__account_create_start:cdp__global__track__account_create_start__flatten
+      kafka.service.account.name: qai-sa
+      s3.bucket.name: test
+      time.interval: HOURLY
+      input.data.format: JSON
+      output.data.format: JSON
+      topics: us_west_2__tianyu_auto_onboarding_test_topic_3
