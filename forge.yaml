@@ -1,0 +1,21 @@
+deployments:
+  s3-sink-test-20240513:
+    type: confluent-connector
+    deploy_from:
+      - canary
+    application: grandcentral
+    environment_name: staging
+    kafka_cluster_name: shared-square-staging-us-west-2
+    enable_dd_metrics: False
+    connector_config:
+      connector.class: S3_SINK
+      tasks.max: 1
+      aws.access.key.id: AKIA3X7TJAL73GLPQJ26
+      aws.secret.access.key: test-secret
+      kafka.auth.mode: SERVICE_ACCOUNT
+      kafka.service.account.name: qai-sa
+      s3.bucket.name: test
+      time.interval: HOURLY
+      input.data.format: JSON
+      output.data.format: JSON
+      topics: us_west_2__tianyu_auto_onboarding_test_topic_3
